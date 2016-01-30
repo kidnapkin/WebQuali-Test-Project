@@ -1,0 +1,9 @@
+<ion-view view-title="Camera">
+  <ion-content ng-controller="CameraCtrl" padding="true">
+    <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}" style="display: block; margin: 0 auto;">
+    <button class="button button-block button-calm" ng-click="takePhoto()">
+      <i class="icon ion-camera"></i>
+      Open Camera
+    </button>
+  </ion-content>
+</ion-view>
