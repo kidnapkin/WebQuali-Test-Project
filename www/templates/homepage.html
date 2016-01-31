@@ -1,6 +1,12 @@
 <ion-view view-title="Homepage">
   <ion-content ng-controller="MapCtrl">
-    <div id="map" data-tap-disabled="true"></div>
+    <ion-refresher
+      pulling-text="Refreshing..."
+      on-refresh="mapRefresher()"
+      spinner="none">
+    </ion-refresher>
+    <div id="map" data-tap-disabled="true" scroll="false"></div>
+    <h1 ng-show="errMsg">Pull down to refresh</h1>
   </ion-content>
 
 </ion-view>

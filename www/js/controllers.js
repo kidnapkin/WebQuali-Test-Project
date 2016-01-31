@@ -2,17 +2,18 @@ angular.module('starter.controllers', [])
 
 
   //Map Controller
-  .controller('MapCtrl', function ($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform) {
+  .controller('MapCtrl', function ($scope, $cordovaGeolocation, $ionicLoading, $ionicPlatform, $ionicPopup) {
 
     $ionicPlatform.ready(function () {
 
+      $scope.mapInitLoad = function () {
         $ionicLoading.show({
-          template: '<ion-spinner icon="bubbles"></ion-spinner><br/>Acquiring location!'
+          template: '<ion-spinner></ion-spinner><br/>Getting location!'
         });
 
         var posOptions = {
           enableHighAccuracy: true,
-          timeout: 50000,
+          timeout: 20000,
           maximumAge: 0
         };
 
@@ -30,24 +31,52 @@ angular.module('starter.controllers', [])
 
           var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
-
-          $scope.map = map;
-
           var markerOptions = {
             position: Latlng,
             map: map,
             title: "You're here"
           };
 
-          var marker = new google.maps.Marker(markerOptions);
+          $scope.marker = new google.maps.Marker(markerOptions);
+
+          $scope.map = map;
+
+          $scope.infowindow = new google.maps.InfoWindow({
+            content: 'Latitude: ' + lat +
+            '<br>Longitude: ' + long
+          });
+
+          $scope.infowindow.open($scope.map, $scope.marker);
 
           $ionicLoading.hide();
 
 
         }, function (err) {
           $ionicLoading.hide();
+
+          $scope.errPopup = function () {
+            $ionicPopup.alert({
+              title: 'Error occured!',
+              content: 'Please check your geolocation settings and pull the page down to refresh.'
+            }).then(function (res) {
+              console.log('Error');
+            });
+          };
+
+          $scope.errPopup();
+
           console.log(err);
         });
+      };
+
+
+      $scope.mapRefresher = function () {
+        $scope.mapInitLoad();
+        $scope.$broadcast('scroll.refreshComplete');
+      };
+
+      $scope.mapInitLoad();
+
     })
   })
 
@@ -81,6 +110,8 @@ angular.module('starter.controllers', [])
 
   //Camera controller
   .controller('CameraCtrl', function ($scope, $cordovaCamera) {
+
+    $scope.isTrue = false;
 
     document.addEventListener("deviceready", function () {
 
